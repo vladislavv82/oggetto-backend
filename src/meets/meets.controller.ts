@@ -1,5 +1,9 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, HttpCode, Param, UseGuards } from '@nestjs/common';
 import { MeetsService } from './meets.service';
+import { CurrentUser } from 'src/auth/decorators/user.decorator';
+import { Roles } from 'src/auth/decorators/roles-auth.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Auth } from 'src/auth/decorators/auth.decorator';
 
 @Controller('meets')
 export class MeetsController {
@@ -13,7 +17,11 @@ export class MeetsController {
     return { message: 'Random pairs created successfully' };
   }
 
+  //only ADMIN
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
   @Get('all-meets')
+  @HttpCode(200)
   async getAllMeets() {
     const meets = await this.meetsService.getAllMeets();
     return meets;

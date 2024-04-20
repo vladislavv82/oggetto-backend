@@ -1,8 +1,12 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	HttpCode,
+	HttpException,
+	HttpStatus,
+	Param,
 	Post,
 	Put,
 	UseGuards,
@@ -11,7 +15,6 @@ import {
 } from '@nestjs/common'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { CurrentUser } from 'src/auth/decorators/user.decorator'
-import { UserDto } from './dto/user.dto'
 import { UserService } from './user.service'
 import { Roles } from 'src/auth/decorators/roles-auth.decorator'
 import { RolesGuard } from 'src/auth/guards/roles.guard'
@@ -53,4 +56,18 @@ export class UserController {
     async addRole(@Body() dto: AddRoleDto) {
         return this.userService.addRole(dto);
     }
+
+	//only ADMIN
+    @Roles('ADMIN')
+    @UseGuards(RolesGuard)
+	@Delete(':id')
+	async removeUser(@Param('id') id: string) {
+		try {
+		  const result = await this.userService.removeUserById(id);
+
+		  return { message: result.message };
+		} catch (error) {
+		  console.log(error);
+		}
+	}
 }

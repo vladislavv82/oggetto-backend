@@ -51,6 +51,45 @@ export class UserService {
       throw new HttpException('Error', HttpStatus.NOT_FOUND);
     }
   }
+  //TODO только для админов 
+// В сервисе пользователя
+async removeUserById(id: string) {
+  try {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        meets: true, // Включаем связанные встречи пользователя
+      },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    // Удаляем все связанные записи в MeetsUser для этого пользователя
+    await this.prisma.meetsUser.deleteMany({
+      where: {
+        userId: id,
+      },
+    });
+
+    // Теперь удаляем пользователя
+    await this.prisma.user.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return { message: 'User deleted successfully' };
+  } catch (error) {
+    console.log(error);
+    throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
+
+
 
   async addRole(dto: AddRoleDto) {
     const { userId, value } = dto;
