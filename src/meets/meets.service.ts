@@ -1,10 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class MeetsService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService,
+        private mailService: MailService
+    ) {}
     
     @Cron(CronExpression.EVERY_5_MINUTES)
     async createRandomPairs() {
@@ -37,7 +40,7 @@ export class MeetsService {
 
                 let title = 'Встреча';
                 if (user1 && user1.name && user2 && user2.name) {
-                    title += ` между пользователем ${user1.name} и ${user2.name}`;
+                    title += ` между пользователем ${user1.name} и ${user2.name} `;
                 } else if (user1 && user1.name) {
                     title += ` с ${user1.name}`;
                 } else if (user2 && user2.name) {
@@ -47,6 +50,9 @@ export class MeetsService {
                 }
 
                 console.log(`Создана пара: ${title}`);
+
+                //отправляем письмо с подтверждением
+		        await this.mailService.sendPairEmail(user1.email, user2.email); 
                
                 const meet = await this.prisma.meets.create({
                     data: {

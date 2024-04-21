@@ -7,6 +7,7 @@ import { RolesModule } from 'src/roles/roles.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { getJwtConfig } from 'src/config/jwt.config';
+import { MailService } from 'src/mail/mail.service';
 
 @Module({
   imports: [

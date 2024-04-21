@@ -28,4 +28,23 @@ export class MailService {
         console.log(error);
     }
   }
+
+  async sendPairEmail(user1Email: string, user2Email: string) {
+    try {
+        await this.mailerService.sendMail({
+            to: [user1Email, user2Email], 
+            subject: 'Поздравляем! У вас новый random coffee!',
+            template: './pair-template', 
+            context: {
+                user1Email,
+                user2Email,
+            },
+        });
+    } catch (error) {
+        console.error('Error sending pair email:', error);
+        throw error;
+    }
+}
+
+
 }
