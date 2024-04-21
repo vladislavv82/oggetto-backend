@@ -181,6 +181,38 @@ export class MeetsService {
             },
         };
     }
+        // Функция для обновления статуса встречи по её идентификатору
+        async updateMeetStatus(meetId, newStatus) {
+            try {
+            // Находим встречу по идентификатору
+            const meet = await this.prisma.meets.findUnique({
+                where: {
+                id: meetId
+                }
+            });
+        
+            // Проверяем, существует ли встреча с указанным идентификатором
+            if (!meet) {
+                throw new Error('Встреча с указанным идентификатором не найдена');
+            }
+        
+            // Обновляем статус встречи
+            const updatedMeet = await this.prisma.meets.update({
+                where: {
+                id: meetId
+                },
+                data: {
+                status: newStatus
+                }
+            });
+        
+            return updatedMeet;
+            } catch (error) {
+            console.error('Произошла ошибка при обновлении статуса встречи:', error);
+            throw error;
+        }
+  }
 
+    
 
 }

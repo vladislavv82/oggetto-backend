@@ -1,10 +1,11 @@
-import { Controller, Delete, Get, HttpCode, NotFoundException, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Put, UseGuards } from '@nestjs/common';
 import { MeetsService } from './meets.service';
 import { CurrentUser } from 'src/auth/decorators/user.decorator';
 import { Roles } from 'src/auth/decorators/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { UserService } from 'src/user/user.service';
+import { MeetsStatus } from '@prisma/client';
 
 @Controller('meets')
 export class MeetsController {
@@ -48,6 +49,22 @@ export class MeetsController {
   @Get('/partner')
   async getMeetByUserId(@CurrentUser('id') id: string): Promise<any> {
       return this.meetsService.getMeetByUserId(id);
+  }
+
+  @Put('/:meetId/status')
+  async updateMeetStatus(
+    @Param('meetId') meetId: string,
+    @Body('status') newStatus: MeetsStatus, 
+  ) {
+    try {
+      const updatedMeet = await this.meetsService.updateMeetStatus(meetId, newStatus);
+      if (!updatedMeet) {
+        throw new NotFoundException('Встреча с указанным идентификатором не найдена');
+      }
+      return { message: 'Статус встречи успешно обновлен', meet: updatedMeet };
+    } catch (error) {
+      throw new NotFoundException('Произошла ошибка при обновлении статуса встречи');
+    }
   }
 
 }

@@ -44,6 +44,7 @@ model Meets {
   title    String
   location String
   datetime DateTime
+  status   MeetsStatus @default(pending)
 
   users MeetsUser[]
 }
@@ -80,3 +81,11 @@ enum StatusConfirmed {
   active
   blocked
 }
+
+enum MeetsStatus {
+  disable
+  pending
+  active
+  fullactive
+}
+
