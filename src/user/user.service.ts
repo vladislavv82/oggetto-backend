@@ -156,7 +156,7 @@ async removeUserById(id: string) {
         gender: null,
         dateOfBirth: null,
         hobbies: [],
-        about: '',
+        redFlags: [],
         password: hashedPassword,
         roles: {
           connect: {
@@ -197,7 +197,7 @@ async removeUserById(id: string) {
         gender: true,
         dateOfBirth: true,
         hobbies: true,
-        about: true
+        redFlags: true
       },
     });
   }
