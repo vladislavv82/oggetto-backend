@@ -142,4 +142,45 @@ export class MeetsService {
         return meets.users;
     }
 
+    async getMeetByUserId(userId: string): Promise<any> {
+        const meetUser = await this.prisma.meetsUser.findFirst({
+            where: {
+                userId: userId,
+            },
+            include: {
+                meet: {
+                    include: {
+                        users: {
+                            where: {
+                                NOT: {
+                                    userId: userId,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    
+        if (!meetUser) {
+            throw new NotFoundException(`Meet for user with id ${userId} not found`);
+        }
+
+        const secondUser = meetUser.meet.users[0].userId;
+        console.log(secondUser);
+        const partner = await this.prisma.user.findFirst({
+            where: {
+                id: secondUser,
+            }
+        })
+    
+        return {
+            meet: {
+                ...meetUser.meet,
+                users: [partner],
+            },
+        };
+    }
+
+
 }

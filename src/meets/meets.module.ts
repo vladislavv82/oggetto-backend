@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { getJwtConfig } from 'src/config/jwt.config';
 import { MailService } from 'src/mail/mail.service';
+import { UserService } from 'src/user/user.service';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { MailService } from 'src/mail/mail.service';
     }),
   ],
   controllers: [MeetsController],
-  providers: [MeetsService, PrismaService],
+  providers: [MeetsService, PrismaService, UserService],
 })
 export class MeetsModule {}
