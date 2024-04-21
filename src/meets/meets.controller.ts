@@ -51,6 +51,12 @@ export class MeetsController {
       return this.meetsService.getMeetByUserId(id);
   }
 
+  //для ТГ БОТА
+  @Get('/bot/partner')
+  async getBotMeetByUserId(id: string): Promise<any> {
+      return this.meetsService.getMeetByUserId(id);
+  }
+
   @Put('/:meetId')
   async updateMeetStatus(
     @Param('meetId') meetId: string,
