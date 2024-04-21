@@ -195,6 +195,11 @@ export class MeetsService {
             if (!meet) {
                 throw new Error('Встреча с указанным идентификатором не найдена');
             }
+            
+            // Проверяем, если текущий статус встречи уже "active" и новый статус также "active", то обновляем его на "fullactive"
+            if (meet.status === 'active' && newStatus === 'active') {
+                newStatus = 'fullactive';
+            }
         
             // Обновляем статус встречи
             const updatedMeet = await this.prisma.meets.update({

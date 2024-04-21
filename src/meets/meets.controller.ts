@@ -51,7 +51,7 @@ export class MeetsController {
       return this.meetsService.getMeetByUserId(id);
   }
 
-  @Put('/:meetId/status')
+  @Put('/:meetId')
   async updateMeetStatus(
     @Param('meetId') meetId: string,
     @Body('status') newStatus: MeetsStatus, 
@@ -61,7 +61,7 @@ export class MeetsController {
       if (!updatedMeet) {
         throw new NotFoundException('Встреча с указанным идентификатором не найдена');
       }
-      return { message: 'Статус встречи успешно обновлен', meet: updatedMeet };
+      return { message: 'Статус встречи успешно обновлен' };
     } catch (error) {
       throw new NotFoundException('Произошла ошибка при обновлении статуса встречи');
     }
